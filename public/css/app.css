@@ -1,0 +1,263 @@
+:root {
+  --background: #faf5ff;
+  --surface: #fff;
+  --ink: #24143d;
+  --muted: #475569;
+  --primary: #6d28d9;
+  --primary-hover: #5420ad;
+  --border: #82748f;
+  --danger: #b91c1c;
+  --soft: #ede9fe;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--ink);
+  font:
+    1rem/1.6 system-ui,
+    sans-serif;
+}
+a {
+  color: var(--primary);
+  text-underline-offset: 0.2em;
+}
+a:hover {
+  color: var(--primary-hover);
+}
+:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 4px;
+}
+.skip {
+  position: absolute;
+  left: 1rem;
+  top: -8rem;
+  padding: 0.75rem;
+  background: var(--surface);
+  z-index: 10;
+}
+.skip:focus {
+  top: 1rem;
+}
+.site-header {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.brand {
+  color: var(--ink);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.label {
+  font:
+    0.65rem/1.5 ui-monospace,
+    monospace;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.25rem;
+}
+nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+nav form {
+  margin: 0;
+}
+main {
+  max-width: 1120px;
+  padding: 2rem 1.5rem 4rem;
+  margin: auto;
+}
+.auth-layout {
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+.intro-panel {
+  display: none;
+}
+.eyebrow {
+  font:
+    700 0.75rem/1.6 ui-monospace,
+    monospace;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+}
+h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0.75rem 0;
+}
+h2 {
+  font-size: 1.15rem;
+  line-height: 1.35;
+}
+p {
+  overflow-wrap: anywhere;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid #ddd6fe;
+  border-radius: 1.25rem;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  box-shadow: 0 12px 48px #24143d08;
+  min-width: 0;
+}
+.muted,
+.helper {
+  color: var(--muted);
+}
+.field {
+  margin: 1.5rem 0;
+}
+label {
+  display: block;
+  font-weight: 650;
+  margin-bottom: 0.5rem;
+}
+input {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+}
+input[aria-invalid="true"] {
+  border: 2px solid var(--danger);
+}
+button {
+  font: inherit;
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 650;
+  touch-action: manipulation;
+}
+.primary {
+  color: white;
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.primary:hover {
+  background: var(--primary-hover);
+}
+.secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+.text-button {
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  padding-left: 0;
+  text-decoration: underline;
+}
+button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.helper {
+  font-size: 0.875rem;
+  margin: 0.5rem 0;
+}
+.form-links {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.form-links a {
+  min-height: 32px;
+}
+.errors {
+  background: #fef2f2;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+.errors a {
+  color: var(--danger);
+}
+.errors ul {
+  padding-left: 1.25rem;
+}
+.field-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+}
+.notice {
+  background: var(--soft);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-wrap: anywhere;
+}
+.workspace {
+  max-width: 720px;
+  margin: 2rem auto;
+}
+dt {
+  font-weight: 700;
+  margin-top: 1rem;
+}
+dd {
+  margin: 0.25rem 0 1rem;
+}
+footer {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+@media (min-width: 800px) {
+  .auth-layout {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 2rem;
+  }
+  .intro-panel {
+    display: block;
+    padding-right: 1rem;
+  }
+  .intro-panel h2 {
+    font-size: clamp(2.5rem, 4vw, 3.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+  }
+  .intro-panel p {
+    max-width: 40ch;
+  }
+  .foundation-note {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
+    margin-top: 3rem;
+    color: var(--muted);
+  }
+}

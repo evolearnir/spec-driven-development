@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title><%= title %> · SkillMart</title>
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <script src="/assets/js/forms.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="brand" href="/">SkillMart<span class="label">FOUNDATION</span></a>
+  <nav aria-label="Main navigation">
+    <% if (user) { %>
+      <a href="/dashboard">Workspace</a>
+      <% if (user.role === 'admin') { %><a href="/admin">Administration</a><% } %>
+      <form action="/logout" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="secondary" type="submit">Sign out</button></form>
+    <% } else { %>
+      <a href="/login">Sign in</a><a href="/register">Create account</a>
+    <% } %>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+<% if (notice) { %><p class="notice" role="status"><%= notice %></p><% } %>

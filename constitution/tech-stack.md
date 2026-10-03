@@ -1,7 +1,7 @@
 # AI Skill Market — Technology Stack
 
-Status: Revised stack per product owner direction; application not scaffolded.
-Governed by: [Mission and Constitution](mission.md), version 0.3.0.
+Status: Approved foundation stack; implementation tracked by F001. Hosting deferred per ADR 004.
+Governed by: [Mission and Constitution](mission.md), version 0.4.1.
 
 ## Architecture
 
@@ -17,42 +17,45 @@ content and confirmation dialogs.
 
 ## Frameworks and Libraries
 
-| Area | Technology | Purpose |
-| --- | --- | --- |
-| Language | JavaScript, ES modules | One language for server code and browser interactions. |
-| Runtime | Node.js 24 LTS | Runs the Express application and maintenance scripts. |
-| Web framework | Express.js 5 | Routing, middleware, form handling, and HTTP responses. |
-| Template engine | EJS | Server-rendered HTML pages and reusable partials. |
-| Frontend | HTML, CSS, vanilla JavaScript | Responsive pages and lightweight interactions. |
-| Database | SQLite | File-based relational persistence with no separate database server. |
-| Database driver | better-sqlite3 | Prepared SQL statements and transactions. |
-| Schema migrations | Numbered SQL files plus a Node.js migration runner | Track and apply schema changes in order. |
-| Sessions | express-session + a maintained SQLite-compatible session store | Persistent server-side login sessions; choose and pin the store during setup. |
-| Password hashing | argon2, using Argon2id | Secure password storage and verification. |
-| Validation | Zod | Validate form fields and query parameters on the server. |
-| Markdown rendering | markdown-it + sanitize-html | Render skill instructions with raw HTML disabled and sanitize generated markup. |
-| HTTP protections | Helmet + express-rate-limit + synchronizer | Response headers, auth throttling, and session-backed CSRF tokens for form submissions. |
-| Email | Nodemailer | Send verification, password recovery, and invitation emails through configured SMTP. |
-| Configuration | dotenv | Load local environment variables; use deployment environment configuration in production. |
-| Logging | Built-in console logging with structured fields | Record application errors and operational events with sensitive values redacted. |
-| Code quality | ESLint + Prettier | Lint and format JavaScript, templates, and styles. |
-| Package manager | npm | Dependency scripts and reproducible installation through `package-lock.json`. |
-| Development reload | nodemon | Restart the application when server files change. |
+| Area               | Technology                                                     | Purpose                                                                                   |
+| ------------------ | -------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| Language           | JavaScript, ES modules                                         | One language for server code and browser interactions.                                    |
+| Runtime            | Node.js 24 LTS                                                 | Runs the Express application and maintenance scripts.                                     |
+| Web framework      | Express.js 5                                                   | Routing, middleware, form handling, and HTTP responses.                                   |
+| Template engine    | EJS                                                            | Server-rendered HTML pages and reusable partials.                                         |
+| Frontend           | HTML, CSS, vanilla JavaScript                                  | Responsive pages and lightweight interactions.                                            |
+| Database           | SQLite                                                         | File-based relational persistence with no separate database server.                       |
+| Database driver    | better-sqlite3                                                 | Prepared SQL statements and transactions.                                                 |
+| Schema migrations  | Numbered SQL files plus a Node.js migration runner             | Track and apply schema changes in order.                                                  |
+| Sessions           | express-session + a maintained SQLite-compatible session store | Persistent server-side login sessions; choose and pin the store during setup.             |
+| Password hashing   | argon2, using Argon2id                                         | Secure password storage and verification.                                                 |
+| Validation         | Zod                                                            | Validate form fields and query parameters on the server.                                  |
+| Markdown rendering | markdown-it + sanitize-html                                    | Render skill instructions with raw HTML disabled and sanitize generated markup.           |
+| HTTP protections   | Helmet + express-rate-limit + synchronizer                     | Response headers, auth throttling, and session-backed CSRF tokens for form submissions.   |
+| Email              | Nodemailer                                                     | Send verification, password recovery, and invitation emails through configured SMTP.      |
+| Configuration      | dotenv                                                         | Load local environment variables; use deployment environment configuration in production. |
+| Logging            | Built-in console logging with structured fields                | Record application errors and operational events with sensitive values redacted.          |
+| Code quality       | ESLint + Prettier                                              | Lint and format JavaScript, templates, and styles.                                        |
+| Package manager    | npm                                                            | Dependency scripts and reproducible installation through `package-lock.json`.             |
+| Development reload | nodemon                                                        | Restart the application when server files change.                                         |
 
-Pin compatible, maintained versions during scaffolding. Commit the lockfile and
-declare the Node.js runtime in project configuration. Dependencies and commands in
-this document are planned; they are not installed or executable yet.
+Compatible versions are pinned in package.json and package-lock.json, with Node.js
+24 declared. Foundation commands are implemented and locally checked; later-phase
+Markdown/discovery/CRUD behavior remains planned. Sessions use connect-sqlite3
+0.9.18 with sqlite3 6.0.1; CSRF uses csrf-sync's synchronizer-token implementation.
+The package named synchronizer is unrelated and is not installed. Nodemon uses
+chokidar 4.0.3 through a compatibility override to avoid vulnerable older braces.
 
 ## Pages and Routing
 
-| Area | GET routes | Mutation behavior |
-| --- | --- | --- |
-| Public marketplace | `/`, `/skills`, `/skills/:slug` | Public reads only. |
-| Authentication | `/register`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password`, `/accept-invitation` | POST endpoints for registration, login/logout, verification, recovery, and invitation acceptance. |
-| User skills | `/dashboard/skills`, `/dashboard/skills/new`, `/dashboard/skills/:id`, `/dashboard/skills/:id/edit` | POST endpoints for create, update, publish, unpublish, and delete. |
-| Admin users | `/admin/users`, `/admin/users/new`, `/admin/users/:id`, `/admin/users/:id/edit` | POST endpoints for invitation/create, update, role changes, suspend/reactivate, and delete. |
-| Admin skills | `/admin/skills`, `/admin/skills/new`, `/admin/skills/:id`, `/admin/skills/:id/edit` | POST endpoints for create, update, publication, featuring, ownership reassignment, and delete. |
-| Admin audit | `/admin/audit` | Read-only view of administrative changes. |
+| Area               | GET routes                                                                                          | Mutation behavior                                                                                 |
+| ------------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Public marketplace | `/`, `/skills`, `/skills/:slug`                                                                     | Public reads only.                                                                                |
+| Authentication     | `/register`, `/login`, `/verify-email`, `/forgot-password`, `/reset-password`, `/accept-invitation` | POST endpoints for registration, login/logout, verification, recovery, and invitation acceptance. |
+| User skills        | `/dashboard/skills`, `/dashboard/skills/new`, `/dashboard/skills/:id`, `/dashboard/skills/:id/edit` | POST endpoints for create, update, publish, unpublish, and delete.                                |
+| Admin users        | `/admin/users`, `/admin/users/new`, `/admin/users/:id`, `/admin/users/:id/edit`                     | POST endpoints for invitation/create, update, role changes, suspend/reactivate, and delete.       |
+| Admin skills       | `/admin/skills`, `/admin/skills/new`, `/admin/skills/:id`, `/admin/skills/:id/edit`                 | POST endpoints for create, update, publication, featuring, ownership reassignment, and delete.    |
+| Admin audit        | `/admin/audit`                                                                                      | Read-only view of administrative changes.                                                         |
 
 Native HTML forms use GET for search/filtering and POST for mutations. Every
 mutation requires validation, authorization, and a CSRF token. GET requests must
@@ -98,7 +101,7 @@ scripts/
   backup-db.js
 data/                            # Local database files; ignored by Git
 constitution/
-specs/
+  features/                        # F001 package uses specification/implementation/validation.md
 docs/decisions/
 .env.example
 ```
@@ -108,18 +111,18 @@ configuration, and private data must never be exposed through static routes.
 
 ## SQLite Data Model
 
-| Table | Main fields / constraints |
-| --- | --- |
-| users | ID, unique normalized email, display name, password hash, role (`user`/`admin`), status (`invited`/`active`/`suspended`), verification timestamp, timestamps. Invited accounts have no password until setup completes. |
-| sessions | Session-store-managed records and expiry; keep the store's schema separate from application migrations when required. |
-| auth_tokens | User reference, purpose (verification/reset/invitation), token hash, expiry, used timestamp. |
-| skills | ID, unique slug, title, summary, description, Markdown body, usage instructions, owner ID, category ID, version label, license, draft/published status, featured flag, timestamps. |
-| categories | ID, unique slug, name. |
-| tags / skill_tags | Normalized tags and skill/tag relationships. |
-| supported_tools / skill_supported_tools | Tool names and creator-declared compatibility relationships. |
-| skill_links | Skill reference, link type, validated HTTP(S) URL. |
-| audit_events | Nullable actor reference, action, target type/ID, non-sensitive change summary, timestamp. |
-| schema_migrations | Applied migration identifier and application timestamp. |
+| Table                                   | Main fields / constraints                                                                                                                                                                                              |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| users                                   | ID, unique normalized email, display name, password hash, role (`user`/`admin`), status (`invited`/`active`/`suspended`), verification timestamp, timestamps. Invited accounts have no password until setup completes. |
+| sessions                                | Session-store-managed records and expiry; keep the store's schema separate from application migrations when required.                                                                                                  |
+| auth_tokens                             | User reference, purpose (verification/reset/invitation), token hash, expiry, used timestamp.                                                                                                                           |
+| skills                                  | ID, unique slug, title, summary, description, Markdown body, usage instructions, owner ID, category ID, version label, license, draft/published status, featured flag, timestamps.                                     |
+| categories                              | ID, unique slug, name.                                                                                                                                                                                                 |
+| tags / skill_tags                       | Normalized tags and skill/tag relationships.                                                                                                                                                                           |
+| supported_tools / skill_supported_tools | Tool names and creator-declared compatibility relationships.                                                                                                                                                           |
+| skill_links                             | Skill reference, link type, validated HTTP(S) URL.                                                                                                                                                                     |
+| audit_events                            | Nullable actor reference, action, target type/ID, non-sensitive change summary, timestamp.                                                                                                                             |
+| schema_migrations                       | Applied migration identifier and application timestamp.                                                                                                                                                                |
 
 - Enable foreign keys on every connection, WAL mode, and a bounded busy timeout.
 - Add indexes for owner, category, publication/date, and relationship lookup queries.
@@ -198,17 +201,17 @@ directory so deployments cannot overwrite it.
 
 Create and verify these scripts during foundation implementation:
 
-| Purpose | Command |
-| --- | --- |
-| Install dependencies | `npm install`; `npm ci` for lockfile-based installation |
-| Local development | `npm run dev` |
-| Start application | `npm start` |
-| Lint | `npm run lint` |
-| Apply/check formatting | `npm run format` / `npm run format:check` |
-| Apply migrations | `npm run db:migrate` |
-| Seed development catalog | `npm run db:seed` with an environment guard |
-| Bootstrap first admin | `npm run admin:bootstrap` with server-side configuration |
-| Create database backup | `npm run db:backup` using the SQLite backup API |
+| Purpose                  | Command                                                  |
+| ------------------------ | -------------------------------------------------------- |
+| Install dependencies     | `npm install`; `npm ci` for lockfile-based installation  |
+| Local development        | `npm run dev`                                            |
+| Start application        | `npm start`                                              |
+| Lint                     | `npm run lint`                                           |
+| Apply/check formatting   | `npm run format` / `npm run format:check`                |
+| Apply migrations         | `npm run db:migrate`                                     |
+| Seed development catalog | `npm run db:seed` with an environment guard              |
+| Bootstrap first admin    | `npm run admin:bootstrap` with server-side configuration |
+| Create database backup   | `npm run db:backup` using the SQLite backup API          |
 
 JavaScript and EJS run directly on Node.js; this baseline needs no frontend bundle
 or TypeScript compilation. Acceptance verification uses repeatable manual scenarios

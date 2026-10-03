@@ -1,7 +1,7 @@
 # AI Skill Market Roadmap
 
-Status: Proposed delivery plan — pending project owner review.
-Governed by: [Mission and Constitution](mission.md), version 0.3.0.
+Status: Phase 0 accepted; Phase 1 locally implemented and checked; final acceptance pending; hosting/staging deferred per ADR 004.
+Governed by: [Mission and Constitution](mission.md), version 0.4.1.
 Technical baseline: [Technology Stack](tech-stack.md).
 
 ## Delivery Strategy
@@ -127,14 +127,14 @@ Prioritize improvements from user feedback. Candidate features, outside the MVP:
 
 ## Feature Backlog
 
-| Spec | Capability | Mission reference | Priority | Depends on | Status |
-| --- | --- | --- | --- | --- | --- |
-| 001-foundation-auth | Foundation, authentication, access control | MKT-04 | P0 | Product review | Proposed |
-| 002-public-marketplace | Landing page, list, and skill detail | MKT-01–03 | P0 | 001 | Proposed |
-| 003-creator-skills | User skill CRUD and publishing | MKT-05 | P0 | 001, 002 | Proposed |
-| 004-admin-users | Admin user CRUD and lifecycle | MKT-06 | P0 | 001, 003 | Proposed |
-| 005-admin-skills | Global skill CRUD and audit view | MKT-07 | P0 | 003, 004 | Proposed |
-| 006-release-readiness | Quality gates, operations, and launch | All | P0 | 001–005 | Proposed |
+| Spec                   | Capability                                 | Mission reference | Priority | Depends on     | Status   |
+| ---------------------- | ------------------------------------------ | ----------------- | -------- | -------------- | -------- |
+| 001-foundation-auth    | Foundation, authentication, access control | MKT-04            | P0       | Product review | Proposed |
+| 002-public-marketplace | Landing page, list, and skill detail       | MKT-01–03         | P0       | 001            | Proposed |
+| 003-creator-skills     | User skill CRUD and publishing             | MKT-05            | P0       | 001, 002       | Proposed |
+| 004-admin-users        | Admin user CRUD and lifecycle              | MKT-06            | P0       | 001, 003       | Proposed |
+| 005-admin-skills       | Global skill CRUD and audit view           | MKT-07            | P0       | 003, 004       | Proposed |
+| 006-release-readiness  | Quality gates, operations, and launch      | All               | P0       | 001–005        | Proposed |
 
 ## Spec-Driven Feature Delivery Loop
 

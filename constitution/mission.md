@@ -1,7 +1,7 @@
 # Mission and Constitution
 
-Status: Product proposal — pending project owner review.
-Constitution version: 0.3.0
+Status: MVP product rules accepted by requesting product owner 2026-10-03; hosting deferred.
+Constitution version: 0.4.1
 
 ## Purpose
 
@@ -12,17 +12,17 @@ verification must remain aligned with them.
 
 ## Product Mission
 
-| Decision | Value |
-| --- | --- |
-| Project name | SkillMart (working title) |
-| Target users | AI tool users, developers, skill creators, and marketplace administrators |
-| User problem | Reusable AI skills are scattered across repositories and communities, making them difficult to discover, evaluate, and maintain. |
-| Desired outcome | Visitors find relevant skills; creators publish and manage their skills; administrators manage users and the entire catalog. |
-| Core value proposition | A searchable skill catalog with clear instructions, creator ownership, and centralized administration. |
-| MVP capabilities | Landing page, skill list, skill detail, authentication, user skill CRUD, admin user CRUD, and admin CRUD for all skills |
-| Explicit non-goals | Payments, running AI skills, model hosting, subscriptions, ratings, and native mobile apps |
-| Success metrics and targets | Proposed launch and adoption targets below; validate during product review. |
-| Project owner / decision-maker | Requesting product owner; name to be recorded before implementation approval |
+| Decision                       | Value                                                                                                                            |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Project name                   | SkillMart (working title)                                                                                                        |
+| Target users                   | AI tool users, developers, skill creators, and marketplace administrators                                                        |
+| User problem                   | Reusable AI skills are scattered across repositories and communities, making them difficult to discover, evaluate, and maintain. |
+| Desired outcome                | Visitors find relevant skills; creators publish and manage their skills; administrators manage users and the entire catalog.     |
+| Core value proposition         | A searchable skill catalog with clear instructions, creator ownership, and centralized administration.                           |
+| MVP capabilities               | Landing page, skill list, skill detail, authentication, user skill CRUD, admin user CRUD, and admin CRUD for all skills          |
+| Explicit non-goals             | Payments, running AI skills, model hosting, subscriptions, ratings, and native mobile apps                                       |
+| Success metrics and targets    | Proposed launch and adoption targets below; validate during product review.                                                      |
+| Project owner / decision-maker | Requesting product owner; name to be recorded before implementation approval                                                     |
 
 > Help AI users discover and reuse practical skills, and help creators publish and
 > maintain them, through an accessible marketplace with clear ownership and reliable administration.
@@ -43,23 +43,23 @@ full release history. File uploads are outside the initial MVP.
 
 ## MVP Pages and Capabilities
 
-| ID | Page / capability | Required behavior |
-| --- | --- | --- |
-| MKT-01 | Landing page `/` | Explain the marketplace, show published featured/latest skills, and provide Browse Skills and Publish a Skill calls to action. |
-| MKT-02 | Skill list `/skills` | Show published skills with search, category/tag/tool filters, sorting, pagination, and loading/empty/error states. |
-| MKT-03 | Skill detail `/skills/[slug]` | Display metadata, creator, license, compatibility, Markdown content, and usage instructions; allow copying the skill body. |
-| MKT-04 | Authentication | Support registration, login, logout, email verification, and password recovery. Require a verified account to publish. |
-| MKT-05 | User panel `/dashboard/skills` | Create, read, update, and delete owned skills; save drafts, publish, and unpublish; confirm destructive actions. |
-| MKT-06 | Admin users `/admin/users` | List, search, create, view, update, suspend/reactivate, change roles, and delete users. Creation sends an invitation; administrators never see passwords. |
-| MKT-07 | Admin skills `/admin/skills` | List, search, create, view, update, publish/unpublish, feature, and delete any skill; assign an owner and record administrative changes. |
+| ID     | Page / capability              | Required behavior                                                                                                                                         |
+| ------ | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MKT-01 | Landing page `/`               | Explain the marketplace, show published featured/latest skills, and provide Browse Skills and Publish a Skill calls to action.                            |
+| MKT-02 | Skill list `/skills`           | Show published skills with search, category/tag/tool filters, sorting, pagination, and loading/empty/error states.                                        |
+| MKT-03 | Skill detail `/skills/[slug]`  | Display metadata, creator, license, compatibility, Markdown content, and usage instructions; allow copying the skill body.                                |
+| MKT-04 | Authentication                 | Support registration, login, logout, email verification, and password recovery. Require a verified account to publish.                                    |
+| MKT-05 | User panel `/dashboard/skills` | Create, read, update, and delete owned skills; save drafts, publish, and unpublish; confirm destructive actions.                                          |
+| MKT-06 | Admin users `/admin/users`     | List, search, create, view, update, suspend/reactivate, change roles, and delete users. Creation sends an invitation; administrators never see passwords. |
+| MKT-07 | Admin skills `/admin/skills`   | List, search, create, view, update, publish/unpublish, feature, and delete any skill; assign an owner and record administrative changes.                  |
 
 ## Roles and Access
 
-| Actor | Permissions |
-| --- | --- |
-| Visitor | Browse and copy published skills; register or log in. |
-| User | Visitor capabilities plus full CRUD on their own skills. Cannot edit other users' skills or access administration. |
-| Admin | User capabilities plus management of all users and skills. |
+| Actor   | Permissions                                                                                                        |
+| ------- | ------------------------------------------------------------------------------------------------------------------ |
+| Visitor | Browse and copy published skills; register or log in.                                                              |
+| User    | Visitor capabilities plus full CRUD on their own skills. Cannot edit other users' skills or access administration. |
+| Admin   | User capabilities plus management of all users and skills.                                                         |
 
 Authorization must be enforced server-side for every protected read and mutation.
 Drafts are visible only to their owner and admins; direct public URLs must not expose
@@ -78,9 +78,9 @@ never email addresses. Prevent deleting, suspending, or demoting the last active
 - Search initially covers title, summary, and tags. Sorting supports newest, recently updated, and title; no popularity score is claimed without usage data.
 - Admin-created skills require an explicit owner. Bootstrap the first administrator using a documented server-side procedure, never public registration.
 
-These are planning assumptions, not recorded owner approvals. Before implementation,
-confirm the skill format, free-versus-paid model, publication policy, licenses/categories,
-deletion/retention policy, and hosting budget.
+The requesting product owner approved these rules, skill format/metadata, free model,
+taxonomy/licenses, capability ownership, and authentication/retention in F001 on
+2026-10-03. See docs/decisions/001–003. Hosting/budget are explicitly deferred per ADR 004.
 
 ## Success Measures
 
@@ -174,8 +174,15 @@ entry below; keep all three files consistent.
 
 ## Amendment History
 
-| Version | Date | Change | Approval |
-| --- | --- | --- | --- |
-| 0.1.0 | 2026-10-03 | Created reusable SDD starter; product decisions remain pending. | Pending project owner review |
-| 0.2.0 | 2026-10-03 | Defined AI Skill Market mission, proposed MVP, roles, product rules, and success measures. | Pending project owner review |
-| 0.3.0 | 2026-10-03 | Revised stack to Express.js, EJS, JavaScript, and SQLite; removed prescribed hosting, error-reporting service, and automated test tooling; aligned roadmap verification. | Stack direction requested by product owner; remaining product proposals pending review |
+Version 0.4.1 (2026-10-03), approved by the requesting owner's direct instruction:
+development verification/resend bypass SMTP and display the token/code and link
+in the terminal. This narrowly amends credential-log restrictions for these local
+development tokens only; production/test and recovery logs stay redacted. See
+F001 specification and ADR 003. No access-control or verification bypass is added.
+
+| Version | Date       | Change                                                                                                                                                                                                                                                                                                                                 | Approval                                                                               |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 0.1.0   | 2026-10-03 | Created reusable SDD starter; product decisions remain pending.                                                                                                                                                                                                                                                                        | Pending project owner review                                                           |
+| 0.2.0   | 2026-10-03 | Defined AI Skill Market mission, proposed MVP, roles, product rules, and success measures.                                                                                                                                                                                                                                             | Pending project owner review                                                           |
+| 0.3.0   | 2026-10-03 | Revised stack to Express.js, EJS, JavaScript, and SQLite; removed prescribed hosting, error-reporting service, and automated test tooling; aligned roadmap verification.                                                                                                                                                               | Stack direction requested by product owner; remaining product proposals pending review |
+| 0.4.0   | 2026-10-03 | Accepted MVP rules, metadata, taxonomy/licenses, capability ownership, authentication/retention policy in ADRs 001–003; deferred hosting/budget/staging per ADR 004 to permit local F001 delivery. Prior pending product statements are superseded by this approval. Adoption/performance targets remain proposed until launch review. | Explicit requesting product owner approval in F001 session                             |

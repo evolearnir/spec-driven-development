@@ -1,0 +1,13 @@
+<%- include('../partials/head') %>
+<section class="card workspace">
+  <p class="eyebrow">YOUR WORKSPACE</p>
+  <h1>Hello, <%= user.display_name %>.</h1>
+  <p>Your account is active. This workspace is the foundation for your upcoming skill collection.</p>
+  <dl><dt>Email verification</dt><dd><%= user.verified_at ? 'Verified — ready for future publishing' : 'Not verified — verification is required to publish' %></dd><dt>Account role</dt><dd><%= user.role %></dd></dl>
+  <% if (!user.verified_at) { %>
+    <form action="/resend-verification" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="primary" type="submit"><%= developmentVerification ? 'Print verification code' : 'Resend verification email' %></button></form>
+    <p class="helper">Up to 3 requests per hour. Sending a new link replaces previous links.</p>
+  <% } %>
+  <div class="notice">Skill creation, discovery, and management will arrive in later roadmap phases.</div>
+</section>
+<%- include('../partials/footer') %>

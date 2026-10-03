@@ -1,0 +1,45 @@
+<%- include('../partials/head') %>
+<div class="auth-layout">
+  <aside class="intro-panel" aria-label="About SkillMart">
+    <p class="eyebrow">A WORKSPACE FOR YOUR KNOW-HOW</p>
+    <h2>Good instructions.<br>Better possibilities.</h2>
+    <p>Build your collection of reusable AI skills, with clear ownership and a community built around sharing.</p>
+    <p class="foundation-note">Account access is ready. Skill discovery and publishing are coming in the next phases.</p>
+  </aside>
+  <section class="card">
+    <p class="eyebrow">YOUR ACCOUNT</p>
+    <h1><%= title %></h1>
+    <p class="muted"><%= intro %></p>
+    <% if (Object.keys(errors).length) { %>
+      <div class="errors" role="alert" tabindex="-1" data-error-summary aria-labelledby="error-title">
+        <h2 id="error-title">Please check your submission</h2>
+        <ul><% for (const [field, error] of Object.entries(errors)) { %><li><% if (field === 'form') { %><%= error %><% } else { %><a href="#<%= field %>"><%= error %></a><% } %></li><% } %></ul>
+      </div>
+    <% } %>
+    <form action="/<%= page %>" method="post">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <% for (const field of fields) { const isPassword = field === 'password'; const label = field === 'displayName' ? 'Display name' : field === 'email' ? 'Email address' : 'Password'; %>
+        <div class="field">
+          <label for="<%= field %>"><%= label %></label>
+          <input id="<%= field %>" name="<%= field %>" type="<%= isPassword ? 'password' : field === 'email' ? 'email' : 'text' %>" required
+            maxlength="<%= isPassword ? 128 : field === 'email' ? 254 : 80 %>"
+            <% if (isPassword && page !== 'login') { %>minlength="12"<% } %>
+            autocomplete="<%= isPassword ? (page === 'login' ? 'current-password' : 'new-password') : field === 'email' ? 'email' : 'nickname' %>"
+            <% if (!isPassword) { %>value="<%= values[field] || '' %>"<% } %>
+            aria-invalid="<%= errors[field] ? 'true' : 'false' %>"
+            <% if (errors[field] || (isPassword && page !== 'login')) { %>aria-describedby="<%= errors[field] ? field + '-error' : 'password-help' %>"<% } %>>
+          <% if (isPassword && page !== 'login') { %><p id="password-help" class="helper">Use 12–128 characters. Password managers and paste are welcome.</p><% } %>
+          <% if (errors[field]) { %><p id="<%= field %>-error" class="field-error"><%= errors[field] %></p><% } %>
+        </div>
+      <% } %>
+      <% if (fields.includes('password')) { %><button class="text-button" type="button" data-password-toggle aria-controls="password" aria-pressed="false">Show password</button><% } %>
+      <button class="primary" type="submit"><%= button %></button>
+    </form>
+    <div class="form-links">
+      <% if (page === 'login') { %><a href="/forgot-password">Forgot your password?</a><a href="/register">New here? Create an account</a><% } else { %><a href="/login">Back to sign in</a><% } %>
+      <% if (page === 'verify-email') { %><p class="helper">Need another link? Sign in and resend from your workspace.</p><% } %>
+      <% if (page === 'reset-password') { %><a href="/forgot-password">Request a new reset link</a><% } %>
+    </div>
+  </section>
+</div>
+<%- include('../partials/footer') %>

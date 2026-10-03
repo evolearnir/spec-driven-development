@@ -1,0 +1,53 @@
+{
+  "name": "skillmart",
+  "version": "0.1.0",
+  "private": true,
+  "overrides": {
+    "connect-sqlite3": {
+      "sqlite3": "6.0.1"
+    },
+    "nodemon": {
+      "chokidar": "4.0.3"
+    }
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "db:migrate": "node src/db/migrate.js",
+    "db:seed": "node src/db/seed.js",
+    "admin:bootstrap": "node scripts/bootstrap-admin.js",
+    "db:backup": "node scripts/backup-db.js",
+    "db:cleanup": "node scripts/cleanup.js",
+    "check:local": "node scripts/check-local.js"
+  },
+  "dependencies": {
+    "argon2": "0.45.1",
+    "better-sqlite3": "13.0.3",
+    "connect-sqlite3": "0.9.18",
+    "csrf-sync": "4.2.1",
+    "dotenv": "18.0.5",
+    "ejs": "6.0.1",
+    "express": "5.2.1",
+    "express-rate-limit": "8.7.0",
+    "express-session": "1.19.0",
+    "helmet": "8.3.0",
+    "markdown-it": "15.0.2",
+    "nodemailer": "10.0.13",
+    "sanitize-html": "2.18.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "globals": "17.13.0",
+    "nodemon": "3.1.14",
+    "prettier": "3.9.9"
+  }
+}
