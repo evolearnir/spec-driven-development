@@ -54,7 +54,11 @@ The Evidence Register is the authoritative current result for each scenario.
 `Rxx` abbreviates `F001-Rxx`. Add exact fixture/service commands and policy values
 before executing the relevant scenario, including token/session expiries and throttle limits.
 
-## Evidence Register
+## Evidence Register — historical JavaScript revision
+
+The results below describe the pre-Prisma foundation. References to JavaScript,
+nodemon, connect-sqlite3, and the previous dependency audit are historical. Current
+stack-change results are recorded in the TypeScript/Prisma section below.
 
 Development-email amendment recheck (2026-10-03): `npm run check:local` passes
 with an unavailable SMTP endpoint. Development verification returns successfully
@@ -106,6 +110,35 @@ inspection also confirms raw verification tokens are not persisted.
 
 Result labels: `Not run`, `Pass`, `Fail`, `Blocked`. A failed check must link to a
 defect and a later recheck; retain the original failure record.
+
+## TypeScript/Prisma replanning evidence — 2026-10-03
+
+Revision: uncommitted constitution 0.5.0 / ADR 005 working tree, checked by OpenCode
+on Windows with Node.js 24.16.0. Verification uses disposable databases under
+OS-temp/opencode and captures development token output only in memory.
+
+| Check / requirements        | Actual result                                                                                                                                                                                                        | Evidence                                                                     |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Stack alignment / R01–R03   | Pass: constitution, roadmap, tech stack, F001 constraints/plan, README, ADR 005, and npm commands use strict TypeScript and Prisma                                                                                   | Owner's direct replanning instruction; updated source/docs                   |
+| Typed build / R03, R14      | Pass: strict checks across application/browser/scripts, compiled server and browser assets, TypeScript lint and formatting                                                                                           | `npm run typecheck`; `npm run build`; `npm run lint`; `npm run format:check` |
+| Prisma persistence / R05    | Pass: fresh deploy and repeated deploy, WAL/FKs, unique emails/slugs and invalid-reference rejection, repeat-safe fixtures                                                                                           | `npm run check:local`; `prisma/schema.prisma`; two checked-in migrations     |
+| Legacy adoption / R03, R05  | Pass: baseline and repeated deployment preserve user/password hash, session, auth token hash, skill/category, tag/tool/link relations, audit summary, and legacy history; foreign-key check returns no violations    | Disposable legacy fixture in `scripts/check-local.ts`                        |
+| Authentication / R06–R09    | Pass: validation, forged-role rejection, Argon2id, read-only token GET, verification/reset reuse/expiry rejection, delivery failure/resend, recovery parity, session regeneration/restart/logout/reset revocation    | Disposable HTTP/service checks                                               |
+| Policies / R10–R12          | Pass: private/owner/publication denial, current role/status, suspension/deletion access denial, explicit reassignment, rollback after denied deletion, last-admin guards, repeat-safe audited bootstrap              | Awaited Prisma policy/service checks                                         |
+| Concurrent lifecycle / R11  | Pass: independent worker connections concurrently demote themselves; exactly one succeeds, one receives 409, and one active admin remains                                                                            | `scripts/fixtures/lifecycle-worker.ts`; shared worker gate                   |
+| Boundaries / R13–R14        | Pass: CSRF, auth/email throttling, HTTPS cookie proxy simulation, private source/static isolation, readiness, live backup restored separately with matching user count and integrity result, expired-session cleanup | Disposable HTTP/backup/retention checks                                      |
+| Compiled startup / R03, R14 | Pass: built production entry point starts; missing config exits safely; Windows process termination exercised                                                                                                        | Child-process checks of `dist/src/server.js`                                 |
+
+Initial legacy adoption failed because Prisma decoded the old SQLite INTEGER
+timestamp declaration as a 32-bit integer. The BIGINT timestamp migration rebuilds
+only timestamp-bearing tables, preserves values and constraints, and fixes the
+failure. The populated legacy fixture and full local acceptance suite passed on
+recheck. No retained workspace database was modified by these checks.
+
+This evidence does not re-claim the historical failed-SQL-migration scenario or
+Chrome/SMTP audit for the new revision. Actual browser accessibility/interaction,
+external SMTP, HTTPS staging, Unix graceful-signal handling, and owner acceptance
+remain separate environment-dependent verification.
 
 ## Exit Gates
 

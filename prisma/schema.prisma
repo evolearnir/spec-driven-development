@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int          @id @default(autoincrement())
+  email         String       @unique
+  display_name  String
+  password_hash String?
+  role          String       @default("user")
+  status        String       @default("active")
+  verified_at   BigInt?
+  auth_version  Int          @default(0)
+  created_at    BigInt
+  updated_at    BigInt
+  tokens        AuthToken[]
+  skills        Skill[]
+  audit_events  AuditEvent[]
+
+  @@map("users")
+}
+
+model AuthToken {
+  id         Int     @id @default(autoincrement())
+  user_id    Int
+  purpose    String
+  token_hash String  @unique
+  expires_at BigInt
+  used_at    BigInt?
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, purpose], map: "auth_tokens_user")
+  @@map("auth_tokens")
+}
+
+model Session {
+  sid     String @id
+  expired BigInt
+  sess    String
+
+  @@map("sessions")
+}
+
+model Category {
+  id     Int     @id @default(autoincrement())
+  slug   String  @unique
+  name   String
+  skills Skill[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id     Int        @id @default(autoincrement())
+  name   String     @unique
+  skills SkillTag[]
+
+  @@map("tags")
+}
+
+model SupportedTool {
+  id     Int                  @id @default(autoincrement())
+  name   String               @unique
+  skills SkillSupportedTool[]
+
+  @@map("supported_tools")
+}
+
+model Skill {
+  id                 Int                  @id @default(autoincrement())
+  slug               String               @unique
+  title              String               @default("")
+  summary            String               @default("")
+  description        String               @default("")
+  body               String               @default("")
+  usage_instructions String               @default("")
+  owner_id           Int
+  category_id        Int?
+  version_label      String               @default("")
+  license            String               @default("")
+  status             String               @default("draft")
+  featured           Boolean              @default(false)
+  created_at         BigInt
+  updated_at         BigInt
+  owner              User                 @relation(fields: [owner_id], references: [id], onDelete: Restrict)
+  category           Category?            @relation(fields: [category_id], references: [id], onDelete: NoAction)
+  tags               SkillTag[]
+  tools              SkillSupportedTool[]
+  links              SkillLink[]
+
+  @@index([owner_id], map: "skills_owner")
+  @@index([category_id], map: "skills_category")
+  @@index([status, created_at], map: "skills_publication")
+  @@map("skills")
+}
+
+model SkillTag {
+  skill_id Int
+  tag_id   Int
+  skill    Skill @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+  tag      Tag   @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([skill_id, tag_id])
+  @@index([tag_id], map: "skill_tags_tag")
+  @@map("skill_tags")
+}
+
+model SkillSupportedTool {
+  skill_id Int
+  tool_id  Int
+  skill    Skill         @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+  tool     SupportedTool @relation(fields: [tool_id], references: [id], onDelete: Cascade)
+
+  @@id([skill_id, tool_id])
+  @@index([tool_id], map: "skill_tools_tool")
+  @@map("skill_supported_tools")
+}
+
+model SkillLink {
+  id       Int    @id @default(autoincrement())
+  skill_id Int
+  type     String
+  url      String
+  skill    Skill  @relation(fields: [skill_id], references: [id], onDelete: Cascade)
+
+  @@index([skill_id], map: "skill_links_skill")
+  @@map("skill_links")
+}
+
+model AuditEvent {
+  id          Int    @id @default(autoincrement())
+  actor_id    Int?
+  action      String
+  target_type String
+  target_id   Int
+  summary     String
+  created_at  BigInt
+  actor       User?  @relation(fields: [actor_id], references: [id], onDelete: SetNull)
+
+  @@index([created_at], map: "audit_events_date")
+  @@map("audit_events")
+}
+
+// Retained so pre-Prisma migration history survives baseline adoption.
+model LegacyMigration {
+  name       String @id
+  applied_at BigInt
+
+  @@map("schema_migrations")
+}

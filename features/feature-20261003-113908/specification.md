@@ -75,8 +75,9 @@ later work. Foundation policy checks must be verifiable independently of those s
 
 ## Data and Non-Functional Constraints
 
-- Use the JavaScript/Express 5/EJS/SQLite stack from the constitution; provider selection remains open.
-- Use prepared SQL, transactions, foreign keys, WAL mode, and bounded busy timeouts.
+- Use strict TypeScript/Express 5/EJS/Prisma/SQLite from constitution 0.5.0; provider selection remains open.
+- Use Prisma Client, Prisma Migrate, parameterized raw SQL where necessary, transactions, foreign keys, WAL mode, and bounded busy timeouts.
+- Type-check and build server/browser code; legacy baseline adoption must preserve existing users, skills, tokens, audit history, and sessions.
 - Only public assets are served statically; database files and environment files are private.
 - Store verification/reset/invitation token hashes, not plaintext tokens. Passwords and tokens
   must not appear in logs, audit events, screenshots, or validation evidence.
@@ -90,7 +91,7 @@ later work. Foundation policy checks must be verifiable independently of those s
 
 | Decision                            | Current position                                                                                                   | Resolution needed                        |
 | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| Stack and UI guidance               | Approved Express/EJS/SQLite; UI skill used; connect-sqlite3 selected, compatible packages pinned                   | Resolved; ADRs 001–003 and lockfile      |
+| Stack and UI guidance               | Approved strict TypeScript/Express/EJS/Prisma/SQLite; Prisma-backed sessions; compatible packages pinned           | Resolved; ADR 005 and lockfile           |
 | Skill format and commercial model   | Approved free Markdown sharing with all mission publication metadata                                               | Resolved; ADR 001                        |
 | Publication                         | Approved immediate verified publication and admin unpublication                                                    | Resolved; ADR 001                        |
 | Taxonomy and licenses               | Development/Writing/Research/Productivity/Design; Claude/ChatGPT/Gemini/Other; MIT/Apache-2.0/CC-BY-4.0/CC0-1.0    | Resolved; ADR 001                        |
@@ -101,6 +102,14 @@ later work. Foundation policy checks must be verifiable independently of those s
 | Hosting/staging and budget          | Owner instructed “do not consider hosting for now”                                                                 | Explicitly deferred; ADR 004             |
 
 ## Completion and Approval
+
+### Owner-requested stack replanning — 2026-10-03
+
+The owner's direct instruction approves strict TypeScript and Prisma ORM as the
+new technical baseline (constitution 0.5.0 / ADR 005). R03/R05/R14 now require
+typed builds, Prisma schema/client/migrations, and non-destructive legacy adoption.
+The accepted user-facing authentication and authorization criteria still apply;
+earlier JavaScript evidence is historical and must be supplemented by migration checks.
 
 ### Owner-requested development email change — 2026-10-03
 

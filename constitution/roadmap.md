@@ -1,7 +1,7 @@
 # AI Skill Market Roadmap
 
-Status: Phase 0 accepted; Phase 1 locally implemented and checked; final acceptance pending; hosting/staging deferred per ADR 004.
-Governed by: [Mission and Constitution](mission.md), version 0.4.1.
+Status: Phase 1 TypeScript/Prisma replanning implemented and locally checked; prior foundation evidence retained; final acceptance pending; hosting/staging deferred per ADR 004.
+Governed by: [Mission and Constitution](mission.md), version 0.6.0.
 Technical baseline: [Technology Stack](tech-stack.md).
 
 ## Delivery Strategy
@@ -29,8 +29,10 @@ resolved; each MVP capability has an owner and testable acceptance criteria.
 
 **Depends on:** Phase 0. **Scope:** Foundation and MKT-04.
 
-- Scaffold Express.js, EJS, JavaScript, and shared CSS/HTML partials.
-- Configure SQLite, SQL migrations, password hashing, and persistent sessions.
+- Scaffold Express.js, EJS, strict TypeScript, and shared CSS/HTML partials.
+- Configure Prisma Client over SQLite, Prisma Migrate, password hashing, and Prisma-backed persistent sessions.
+- Baseline existing SQLite databases without resetting data; verify fresh and legacy setups.
+- Add TypeScript checking/builds for server, maintenance scripts, and browser modules.
 - Model users, sessions, roles, statuses, skills, categories, tags, and audit events.
 - Implement registration, email verification, login/logout, and password recovery.
 - Establish server-side ownership/role checks and first-admin bootstrap.
@@ -39,11 +41,13 @@ resolved; each MVP capability has an owner and testable acceptance criteria.
 **Exit criteria:** A fresh checkout can be configured and run with documented commands.
 Authentication works in staging; unverified users cannot publish; suspended accounts
 are denied protected access; protected routes and mutations reject unauthorized requests.
-Database migrations and first-admin setup are repeatable.
+Database migrations and first-admin setup are repeatable. Type-checking and builds
+pass; legacy adoption preserves users/sessions; concurrent Prisma transactions
+preserve token single-use and final-admin protection.
 
-## Phase 2 — Landing Page and Public Skill Discovery
+## Phase 2 — Public Marketplace, SEO, and Dark Theme
 
-**Depends on:** Phase 1. **Scope:** MKT-01, MKT-02, MKT-03.
+**Depends on:** Phase 1. **Scope:** MKT-01, MKT-02, MKT-03; SEO-01–03 and THEME-01–02 from the mission.
 
 - Seed realistic sample skills for development and acceptance verification.
 - Build landing page messaging, featured/latest sections, and browse/publish links.
@@ -51,12 +55,28 @@ Database migrations and first-admin setup are repeatable.
 - Store discovery state in URL parameters for shareable results.
 - Build skill details with safe Markdown rendering, creator information, license,
   declared compatibility, usage instructions, and copy feedback.
-- Add page metadata, canonical URLs, sitemap, and loading/empty/error/not-found states.
+- Add loading/empty/error/not-found states.
+- Implement server-rendered page-specific titles/descriptions, absolute canonical URLs,
+  Open Graph/Twitter metadata, robots.txt, and an XML sitemap (SEO-01–03).
+- Define canonical/indexing policy for search/filter/sort/pagination URLs; exclude
+  private, token-bearing, unavailable, and error pages from indexing and the sitemap.
+  Publication changes and owner suspension must update sitemap eligibility.
+- Build shared light/dark CSS tokens and an accessible Light/Dark/System selector;
+  default to the system preference and persist explicit choices (THEME-01–02).
+- Apply both themes to public pages, existing auth and protected-page shells,
+  Markdown/code, forms, focus states, and empty/error states. Resolve the initial
+  theme before paint and keep content readable without JavaScript or storage.
+- Record metadata/crawler checks and browser checks for both themes, preference
+  persistence, system changes, keyboard access, responsive layouts, and contrast.
 
 **Exit criteria:** A visitor can navigate from the landing page to a filtered list,
 open a skill, and copy its instructions. Only published skills from active owners
 appear publicly. Draft and deleted skill URLs disclose no private content.
 Search/filter combinations, pagination, and invalid URLs have defined behavior.
+SEO-01–03 and THEME-01–02 pass: metadata/main content appears in initial HTML;
+canonical/query policies are verified; sitemap and noindex rules respect public
+visibility; theme selection survives reload/navigation, follows system mode, and
+renders without a wrong-theme flash. Both themes meet scoped accessibility checks.
 
 ## Phase 3 — Creator Panel and Skill CRUD
 
@@ -104,11 +124,13 @@ are verified. Suspension hides the owner's public skills and prevents protected 
 - Manually verify complete discovery, creator, and admin journeys and record repeatable evidence.
 - Verify authorization, unsafe Markdown handling, validation, and auth throttling.
 - Check responsive layouts, keyboard access, accessibility, and performance targets.
+- Recheck SEO visibility/canonical/sitemap rules and light/dark/system theme behavior
+  across public pages and completed creator/admin panels.
 - Exercise migrations, backups/restoration, application rollback, and production email.
 - Configure application error logs, health checks, and aggregate usage events.
 - Publish setup guidance, creator instructions, admin guidance, and release notes.
 
-**Exit criteria:** Linting, formatting, and documented manual acceptance checks pass; no release-blocking defects remain;
+**Exit criteria:** Type-checking, production/client builds, linting, formatting, and documented manual acceptance checks pass; no release-blocking defects remain;
 mission release gates have evidence; production smoke checks pass; a rollback and
 database recovery procedure are documented. Assign a 30-day metrics review owner/date.
 
@@ -127,14 +149,14 @@ Prioritize improvements from user feedback. Candidate features, outside the MVP:
 
 ## Feature Backlog
 
-| Spec                   | Capability                                 | Mission reference | Priority | Depends on     | Status   |
-| ---------------------- | ------------------------------------------ | ----------------- | -------- | -------------- | -------- |
-| 001-foundation-auth    | Foundation, authentication, access control | MKT-04            | P0       | Product review | Proposed |
-| 002-public-marketplace | Landing page, list, and skill detail       | MKT-01–03         | P0       | 001            | Proposed |
-| 003-creator-skills     | User skill CRUD and publishing             | MKT-05            | P0       | 001, 002       | Proposed |
-| 004-admin-users        | Admin user CRUD and lifecycle              | MKT-06            | P0       | 001, 003       | Proposed |
-| 005-admin-skills       | Global skill CRUD and audit view           | MKT-07            | P0       | 003, 004       | Proposed |
-| 006-release-readiness  | Quality gates, operations, and launch      | All               | P0       | 001–005        | Proposed |
+| Spec                   | Capability                                 | Mission reference                 | Priority | Depends on     | Status   |
+| ---------------------- | ------------------------------------------ | --------------------------------- | -------- | -------------- | -------- |
+| 001-foundation-auth    | Foundation, authentication, access control | MKT-04                            | P0       | Product review | Proposed |
+| 002-public-marketplace | Public discovery, SEO, and dark theme      | MKT-01–03; SEO-01–03; THEME-01–02 | P0       | 001            | Proposed |
+| 003-creator-skills     | User skill CRUD and publishing             | MKT-05                            | P0       | 001, 002       | Proposed |
+| 004-admin-users        | Admin user CRUD and lifecycle              | MKT-06                            | P0       | 001, 003       | Proposed |
+| 005-admin-skills       | Global skill CRUD and audit view           | MKT-07                            | P0       | 003, 004       | Proposed |
+| 006-release-readiness  | Quality gates, operations, and launch      | All                               | P0       | 001–005        | Proposed |
 
 ## Spec-Driven Feature Delivery Loop
 

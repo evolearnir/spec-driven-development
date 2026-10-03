@@ -2,35 +2,33 @@
   "name": "skillmart",
   "version": "0.1.0",
   "private": true,
-  "overrides": {
-    "connect-sqlite3": {
-      "sqlite3": "6.0.1"
-    },
-    "nodemon": {
-      "chokidar": "4.0.3"
-    }
-  },
   "type": "module",
   "engines": {
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
+    "predev": "npm run build:client",
+    "dev": "tsx watch src/server.ts",
+    "build:client": "tsc -p tsconfig.client.json",
+    "build": "tsc -p tsconfig.build.json && npm run build:client",
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/src/server.js",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:migrate": "node src/db/migrate.js",
-    "db:seed": "node src/db/seed.js",
-    "admin:bootstrap": "node scripts/bootstrap-admin.js",
-    "db:backup": "node scripts/backup-db.js",
-    "db:cleanup": "node scripts/cleanup.js",
-    "check:local": "node scripts/check-local.js"
+    "db:generate": "prisma generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "admin:bootstrap": "tsx scripts/bootstrap-admin.ts",
+    "db:backup": "tsx scripts/backup-db.ts",
+    "db:cleanup": "tsx scripts/cleanup.ts",
+    "check:local": "tsx scripts/check-local.ts",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "6.19.0",
     "argon2": "0.45.1",
     "better-sqlite3": "13.0.3",
-    "connect-sqlite3": "0.9.18",
     "csrf-sync": "4.2.1",
     "dotenv": "18.0.5",
     "ejs": "6.0.1",
@@ -45,9 +43,18 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
+    "@types/better-sqlite3": "7.6.13",
+    "@types/express": "5.0.6",
+    "@types/express-session": "1.18.2",
+    "@types/node": "24.10.1",
+    "@types/nodemailer": "7.0.4",
     "eslint": "10.12.0",
     "globals": "17.13.0",
-    "nodemon": "3.1.14",
-    "prettier": "3.9.9"
+    "jiti": "2.6.1",
+    "prettier": "3.9.9",
+    "prisma": "6.19.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.57.0"
   }
 }

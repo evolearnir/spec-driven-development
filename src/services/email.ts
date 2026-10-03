@@ -1,5 +1,14 @@
 import nodemailer from "nodemailer";
-export function createMailer(config) {
+import type { Config } from "../config/env.js";
+export type TokenPurpose = "verification" | "reset";
+export interface Mailer {
+  send(
+    user: { id: number; email: string },
+    purpose: TokenPurpose,
+    token: string,
+  ): Promise<void>;
+}
+export function createMailer(config: Config) {
   const transport = nodemailer.createTransport({
     host: config.SMTP_HOST,
     port: config.SMTP_PORT,
@@ -12,7 +21,7 @@ export function createMailer(config) {
     socketTimeout: 10000,
   });
   return {
-    async send(user, purpose, token) {
+    async send(user: { email: string }, purpose: TokenPurpose, token: string) {
       const route =
         purpose === "verification" ? "verify-email" : "reset-password";
       if (config.NODE_ENV === "development" && purpose === "verification") {

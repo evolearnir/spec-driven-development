@@ -1,5 +1,9 @@
 # ADR 002 — SQLite and persistent sessions
 
+Driver, migrations, session store, and transaction mechanics superseded by
+[ADR 005](005-typescript-prisma.md). SQLite, retention, and backup policy remain
+current. The following records the original pre-Prisma decision.
+
 Accepted 2026-10-03. Use better-sqlite3 with foreign keys, WAL, and a 5-second
 busy timeout. Numbered migrations and their history inserts are atomic.
 Use express-session with connect-sqlite3 0.9.18 (updated August 2026), pinned in

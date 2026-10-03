@@ -3,8 +3,9 @@
 Accepted by the requesting product owner on 2026-10-03 through explicit approval
 of F001's specification, plan, product rules, taxonomy, and security policies.
 
-Use Node.js 24, Express 5, EJS, ES modules, thin controllers, services, and prepared
-SQL repositories. Only public/ is static. No frontend bundle or later-phase CRUD
+Language/repository choices amended by [ADR 005](005-typescript-prisma.md): use
+strict TypeScript, Node.js 24, Express 5, EJS, ES modules, thin controllers, services,
+and Prisma repositories. Only public/ and compiled browser assets are static. No frontend framework or later-phase CRUD
 screens are included. MKT-01–07 are owned by the requesting product owner; their
 acceptance boundaries are the capability rows in constitution/mission.md.
 MKT-04 is delivered here; the other capabilities remain later roadmap work.

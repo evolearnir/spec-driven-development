@@ -1,30 +1,44 @@
 import express from "express";
 import helmet from "helmet";
 import { csrfSync } from "csrf-sync";
-import { fileURLToPath } from "node:url";
 import { sessionMiddleware } from "./middleware/session.js";
 import { currentUser, requireUser, requireAdmin } from "./middleware/access.js";
 import { authRoutes } from "./routes/auth.routes.js";
 import { authService } from "./services/auth.js";
 import { AppError } from "./services/errors.js";
+import type { Config } from "./config/env.js";
+import type { Database } from "./db/connection.js";
+import type { Mailer } from "./services/email.js";
+import type { Store } from "express-session";
+import type { ErrorRequestHandler } from "express";
+import path from "node:path";
 
-export function createApp(config, db, store, mailer) {
+export function createApp(
+  config: Config,
+  db: Database,
+  store: Store,
+  mailer: Mailer,
+) {
   const app = express();
   app.locals.developmentVerification = config.NODE_ENV === "development";
   app.disable("x-powered-by");
   app.set("trust proxy", config.TRUST_PROXY);
   app.set("view engine", "ejs");
-  app.set("views", fileURLToPath(new URL("./views/", import.meta.url)));
+  app.set("views", path.resolve("src/views"));
   app.use(helmet({ referrerPolicy: { policy: "no-referrer" } }));
   app.use(
+    "/assets/js",
+    express.static(path.resolve("dist/client"), { dotfiles: "deny" }),
+  );
+  app.use(
     "/assets",
-    express.static(fileURLToPath(new URL("../public/", import.meta.url)), {
+    express.static(path.resolve("public"), {
       dotfiles: "deny",
     }),
   );
   app.use(express.urlencoded({ extended: false, limit: "16kb" }));
-  app.get("/health", (req, res) => {
-    db.prepare("SELECT 1").get();
+  app.get("/health", async (req, res) => {
+    await db.$queryRaw`SELECT 1`;
     res.json({ status: "ok" });
   });
   app.use(sessionMiddleware(config, store));
@@ -51,7 +65,7 @@ export function createApp(config, db, store, mailer) {
     res.render("admin/index", { title: "Administration" }),
   );
   app.use((req, res, next) => next(new AppError("Page not found.", 404)));
-  app.use((error, req, res, next) => {
+  const handleError: ErrorRequestHandler = (error, req, res, next) => {
     if (res.headersSent) return next(error);
     const csrfError = error.code === "EBADCSRFTOKEN";
     const status = csrfError
@@ -74,6 +88,7 @@ export function createApp(config, db, store, mailer) {
       csrfToken: res.locals.csrfToken || "",
       notice: null,
     });
-  });
+  };
+  app.use(handleError);
   return app;
 }

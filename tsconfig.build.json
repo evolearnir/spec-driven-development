@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "scripts/bootstrap-admin.ts",
+    "scripts/backup-db.ts",
+    "scripts/cleanup.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/client",
+    "scripts/check-local.ts",
+    "scripts/fixtures"
+  ]
+}

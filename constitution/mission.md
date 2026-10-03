@@ -1,7 +1,7 @@
 # Mission and Constitution
 
 Status: MVP product rules accepted by requesting product owner 2026-10-03; hosting deferred.
-Constitution version: 0.4.1
+Constitution version: 0.6.0
 
 ## Purpose
 
@@ -66,6 +66,23 @@ Drafts are visible only to their owner and admins; direct public URLs must not e
 them. Public profiles expose only display names and public creator information,
 never email addresses. Prevent deleting, suspending, or demoting the last active admin.
 
+## Phase 2 — SEO and Theme Requirements
+
+SEO and dark-theme support are required deliverables of Phase 2 alongside
+MKT-01–03. The requesting owner's direct instruction approves this scope; the
+Phase 2 specification must trace these requirements to implementation and checks.
+
+| ID       | Requirement                      | Acceptance boundary                                                                                                                                                                                                                                                                                                                                                         |
+| -------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SEO-01   | Search-readable public pages     | Landing, catalog, and published skill-detail responses contain the main content, a descriptive page-specific title, meta description, and absolute canonical URL in server-rendered HTML without requiring JavaScript.                                                                                                                                                      |
+| SEO-02   | Controlled indexing              | Sitemap includes only canonical public pages and published skills owned by active users. Drafts, suspended-owner skills, authentication/token pages, dashboard/admin pages, and error pages are excluded and receive noindex when served. robots.txt references the sitemap; crawler rules never replace authorization.                                                     |
+| SEO-03   | Sharing and duplicate handling   | Public pages provide escaped Open Graph and Twitter card metadata. The Phase 2 specification defines canonical/indexing behavior for search, filters, sorting, and pagination, preventing duplicate query variants or arbitrary search URLs from flooding the index while retaining usable pagination links.                                                                |
+| THEME-01 | Dark theme and preference        | A keyboard-accessible Light/Dark/System selector is available in the shared interface. System is the default; explicit selections persist across navigation and reloads. System mode follows operating-system preference changes.                                                                                                                                           |
+| THEME-02 | Consistent, accessible rendering | Both themes cover public pages, existing auth/workspace/admin shells, forms, Markdown/code, and empty/error states. Text, controls, and focus states meet WCAG 2.2 AA contrast requirements in each theme. Initial rendering uses the resolved theme without a visible wrong-theme flash; basic content remains readable with JavaScript or preference storage unavailable. |
+
+Later creator/admin screens inherit the Phase 2 theme foundation. SEO targets
+discoverability and correct indexing; search rankings are not an acceptance promise.
+
 ## Proposed Product Rules and Assumptions
 
 - The MVP is a free sharing marketplace. Paid listings and transactions require a separate specification.
@@ -90,6 +107,7 @@ Proposed release gates:
 - Documented manual end-to-end checks pass for discovery, creator CRUD, admin user CRUD, and admin skill CRUD.
 - Authorization checks demonstrate that users cannot access another user's drafts or mutate their skills, and non-admins cannot access admin operations.
 - Core pages meet WCAG 2.2 AA requirements in scope, including keyboard access, labels, contrast, and focus states.
+- Phase 2 demonstrates SEO-01–03 and THEME-01–02 with rendered-HTML/indexing checks and light/dark/system browser checks before the marketplace milestone is accepted.
 - Target p75 LCP <= 2.5 seconds, INP <= 200 ms, and CLS <= 0.1 on public pages. Use prelaunch lab checks, then validate with field data when traffic is sufficient.
 
 Proposed first-30-day adoption targets: 20 published skills from at least 5 creators,
@@ -123,6 +141,12 @@ review targets after launch against actual audience size.
 8. **Keep specifications current.** When behavior changes, update the specification
    and acceptance criteria before changing the implementation. Record material
    architecture decisions and their tradeoffs.
+9. **Use the approved typed persistence stack.** Author application, browser, and
+   maintenance code in strict TypeScript with ES modules. Use Prisma Client for
+   application persistence and Prisma Migrate for schema history. SQLite remains
+   the database. SQL is reserved for migrations, parameterized operations Prisma
+   cannot express, and SQLite-specific maintenance. Type-check and compile before
+   accepting a change; generated JavaScript is a build artifact.
 
 ## Specification Contract
 
@@ -174,6 +198,20 @@ entry below; keep all three files consistent.
 
 ## Amendment History
 
+Version 0.6.0 (2026-10-03), approved by the requesting owner's direct instruction:
+make SEO and dark-theme support explicit Phase 2 deliverables. Affects mission
+requirements and release gates, the Phase 2 roadmap/exit criteria, and the
+tech-stack rules for metadata, indexing, shared theme tokens, and verification.
+The future Phase 2 specification must include SEO-01–03 and THEME-01–02; Phase 1
+evidence does not demonstrate these new deliverables.
+
+Version 0.5.0 (2026-10-03), approved by the requesting owner's direct replanning
+instruction: replace authored JavaScript with strict TypeScript and direct SQL
+application repositories with Prisma ORM. Affects the stack, Phase 1 plan, F001
+constraints, tooling, schema history, and asynchronous database boundaries.
+Existing SQLite data and the accepted product/authentication rules are preserved.
+Record migration verification separately from earlier JavaScript evidence.
+
 Version 0.4.1 (2026-10-03), approved by the requesting owner's direct instruction:
 development verification/resend bypass SMTP and display the token/code and link
 in the terminal. This narrowly amends credential-log restrictions for these local
@@ -186,3 +224,6 @@ F001 specification and ADR 003. No access-control or verification bypass is adde
 | 0.2.0   | 2026-10-03 | Defined AI Skill Market mission, proposed MVP, roles, product rules, and success measures.                                                                                                                                                                                                                                             | Pending project owner review                                                           |
 | 0.3.0   | 2026-10-03 | Revised stack to Express.js, EJS, JavaScript, and SQLite; removed prescribed hosting, error-reporting service, and automated test tooling; aligned roadmap verification.                                                                                                                                                               | Stack direction requested by product owner; remaining product proposals pending review |
 | 0.4.0   | 2026-10-03 | Accepted MVP rules, metadata, taxonomy/licenses, capability ownership, authentication/retention policy in ADRs 001–003; deferred hosting/budget/staging per ADR 004 to permit local F001 delivery. Prior pending product statements are superseded by this approval. Adoption/performance targets remain proposed until launch review. | Explicit requesting product owner approval in F001 session                             |
+| 0.4.1   | 2026-10-03 | Development verification/resend prints code/link and skips SMTP; other token logs stay redacted.                                                                                                                                                                                                                                       | Direct product owner instruction                                                       |
+| 0.5.0   | 2026-10-03 | Replanned the foundation for strict TypeScript, Prisma Client, Prisma Migrate, and Prisma-backed sessions; preserve SQLite and existing data.                                                                                                                                                                                          | Direct product owner instruction                                                       |
+| 0.6.0   | 2026-10-03 | Added Phase 2 SEO and shared light/dark/system theme requirements, engineering guidance, and verifiable milestone exit criteria.                                                                                                                                                                                                       | Direct product owner instruction                                                       |

@@ -21,7 +21,9 @@ const schema = z.object({
   BACKUP_DIR: z.string().default("./backups"),
 });
 
-export function loadConfig(input = process.env) {
+export function loadConfig(
+  input: Record<string, string | undefined> = process.env,
+) {
   const result = schema.safeParse(input);
   if (!result.success) {
     throw new Error(
@@ -39,6 +41,6 @@ export function loadConfig(input = process.env) {
     );
   }
   config.APP_URL = new URL(config.APP_URL).origin;
-  config.secureCookies = config.APP_URL.startsWith("https://");
-  return config;
+  return { ...config, secureCookies: config.APP_URL.startsWith("https://") };
 }
+export type Config = ReturnType<typeof loadConfig>;

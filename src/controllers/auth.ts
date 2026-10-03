@@ -7,6 +7,13 @@ import {
 } from "../validators/auth.js";
 import { AppError } from "../services/errors.js";
 import { hashToken } from "../services/auth.js";
+import type { AuthService } from "../services/auth.js";
+import type { Request, Response, RequestHandler } from "express";
+import type { csrfSync } from "csrf-sync";
+import type { z } from "zod";
+export type Csrf = ReturnType<typeof csrfSync>;
+type Page = keyof typeof definitions;
+type TokenPage = "verify-email" | "reset-password";
 
 const definitions = {
   register: {
@@ -41,8 +48,13 @@ const definitions = {
     fields: [],
   },
 };
-export function authController(service, csrf) {
-  function form(req, res, page, options = {}) {
+export function authController(service: AuthService, csrf: Csrf) {
+  function form(
+    req: Request,
+    res: Response,
+    page: Page,
+    options: Record<string, unknown> = {},
+  ) {
     res.render("auth/form", {
       ...definitions[page],
       page,
@@ -52,7 +64,7 @@ export function authController(service, csrf) {
       ...options,
     });
   }
-  function tokenPage(req, res, page) {
+  function tokenPage(req: Request, res: Response, page: TokenPage) {
     const token = req.query.token;
     // Persist only its hash in the server session; never echo a link token in HTML.
     req.session[page] =
@@ -61,7 +73,12 @@ export function authController(service, csrf) {
         : null;
     form(req, res, page);
   }
-  function input(req, res, page, schema) {
+  function input<T>(
+    req: Request,
+    res: Response,
+    page: Page,
+    schema: z.ZodType<T>,
+  ) {
     const result = validate(schema, req.body);
     if (result.errors) {
       res.status(422);
@@ -81,7 +98,12 @@ export function authController(service, csrf) {
     }
     return result.data;
   }
-  async function attempt(req, res, page, action) {
+  async function attempt(
+    req: Request,
+    res: Response,
+    page: Page,
+    action: () => Promise<void>,
+  ) {
     try {
       await action();
     } catch (e) {
@@ -102,13 +124,19 @@ export function authController(service, csrf) {
       });
     }
   }
-  function notice(req, res, message) {
+  function notice(req: Request, res: Response, message: string) {
     req.session.notice = message;
     res.redirect(303, "/login");
   }
   return {
-    show: (page) => (req, res) => form(req, res, page),
-    tokenPage: (page) => (req, res) => tokenPage(req, res, page),
+    show:
+      (page: Page): RequestHandler =>
+      (req, res) =>
+        form(req, res, page),
+    tokenPage:
+      (page: TokenPage): RequestHandler =>
+      (req, res) =>
+        tokenPage(req, res, page),
     register: async (req, res) =>
       attempt(req, res, "register", async () => {
         const data = input(req, res, "register", registration);
@@ -129,7 +157,7 @@ export function authController(service, csrf) {
         const data = input(req, res, "login", login);
         if (!data) return;
         const user = await service.login(data.email, data.password);
-        await new Promise((resolve, reject) =>
+        await new Promise<void>((resolve, reject) =>
           req.session.regenerate((e) => (e ? reject(e) : resolve())),
         );
         req.session.userId = user.id;
@@ -146,7 +174,7 @@ export function authController(service, csrf) {
       }),
     verify: async (req, res) =>
       attempt(req, res, "verify-email", async () => {
-        service.verify(req.session["verify-email"], { hashed: true });
+        await service.verify(req.session["verify-email"], { hashed: true });
         delete req.session["verify-email"];
         notice(
           req,
@@ -155,6 +183,7 @@ export function authController(service, csrf) {
         );
       }),
     resend: async (req, res) => {
+      if (!req.user) throw new AppError("Sign in with an active account.", 403);
       const delivered = await service.resend(req.user.id);
       req.session.notice = delivered
         ? req.app.locals.developmentVerification
@@ -181,11 +210,17 @@ export function authController(service, csrf) {
           hashed: true,
         });
         // Destroy the requesting session too; never resave a session removed by reset.
-        await new Promise((resolve, reject) =>
+        await new Promise<void>((resolve, reject) =>
           req.session.destroy((e) => (e ? reject(e) : resolve())),
         );
         res.clearCookie("skillmart.sid", { path: "/" });
         res.redirect(303, "/login?reset=complete");
       }),
+  } satisfies Record<
+    "register" | "login" | "logout" | "verify" | "resend" | "recover" | "reset",
+    RequestHandler
+  > & {
+    show(page: Page): RequestHandler;
+    tokenPage(page: TokenPage): RequestHandler;
   };
 }

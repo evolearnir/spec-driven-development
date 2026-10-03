@@ -2,12 +2,14 @@ import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import { requireUser } from "../middleware/access.js";
 import { authController } from "../controllers/auth.js";
+import type { AuthService } from "../services/auth.js";
+import type { Csrf } from "../controllers/auth.js";
 
-export function authRoutes(service, csrf) {
+export function authRoutes(service: AuthService, csrf: Csrf) {
   const router = Router();
   const controller = authController(service, csrf);
   const options = {
-    standardHeaders: "draft-8",
+    standardHeaders: "draft-8" as const,
     legacyHeaders: false,
     message: "Too many attempts. Please retry after the rate-limit window.",
   };
