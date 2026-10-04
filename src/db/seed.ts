@@ -8,6 +8,7 @@ import {
 } from "./connection.js";
 import { hashPassword } from "../services/auth.js";
 import { randomBytes } from "node:crypto";
+import { seedMarketplace } from "./seed-marketplace.js";
 
 export async function seed(db: Database) {
   const hash = await hashPassword(randomBytes(24).toString("hex"));
@@ -57,6 +58,7 @@ export async function seed(db: Database) {
         }
     }
   });
+  await seedMarketplace(db, hash);
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const config = loadConfig();

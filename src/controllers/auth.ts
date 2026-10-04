@@ -164,6 +164,11 @@ export function authController(service: AuthService, csrf: Csrf) {
         req.session.authVersion = user.auth_version;
         req.session.authExpires = Date.now() + 7 * 86400000;
         csrf.generateToken(req, true);
+        // Browsers can follow redirect headers before the response body ends.
+        // Persist the regenerated session before the dashboard can request it.
+        await new Promise<void>((resolve, reject) =>
+          req.session.save((e) => (e ? reject(e) : resolve())),
+        );
         res.redirect(303, "/dashboard");
       }),
     logout: (req, res, next) =>

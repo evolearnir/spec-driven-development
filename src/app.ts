@@ -4,6 +4,7 @@ import { csrfSync } from "csrf-sync";
 import { sessionMiddleware } from "./middleware/session.js";
 import { currentUser, requireUser, requireAdmin } from "./middleware/access.js";
 import { authRoutes } from "./routes/auth.routes.js";
+import { publicRoutes } from "./routes/public.routes.js";
 import { authService } from "./services/auth.js";
 import { AppError } from "./services/errors.js";
 import type { Config } from "./config/env.js";
@@ -26,6 +27,11 @@ export function createApp(
   app.set("view engine", "ejs");
   app.set("views", path.resolve("src/views"));
   app.use(helmet({ referrerPolicy: { policy: "no-referrer" } }));
+  app.use((_req, res, next) => {
+    res.set("X-Robots-Tag", "noindex");
+    res.locals.seo = null;
+    next();
+  });
   app.use(
     "/assets/js",
     express.static(path.resolve("dist/client"), { dotfiles: "deny" }),
@@ -57,7 +63,7 @@ export function createApp(
     next();
   });
   app.use(authRoutes(authService(db, mailer), csrf));
-  app.get("/", (req, res) => res.redirect(302, "/login"));
+  app.use(publicRoutes(config, db));
   app.get("/dashboard", requireUser, (req, res) =>
     res.render("dashboard/index", { title: "Your workspace" }),
   );
@@ -77,7 +83,9 @@ export function createApp(
           : 500;
     if (status === 500)
       console.error(JSON.stringify({ event: "request_failed", status }));
+    res.set("X-Robots-Tag", "noindex");
     res.status(status).render("errors/index", {
+      seo: null,
       title: `Request failed (${status})`,
       message: csrfError
         ? "Your form expired. Reload the page and try again."

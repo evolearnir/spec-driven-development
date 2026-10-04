@@ -1,13 +1,10 @@
 <%- include('../partials/head') %>
-<section class="card workspace">
-  <p class="eyebrow">YOUR WORKSPACE</p>
-  <h1>Hello, <%= user.display_name %>.</h1>
-  <p>Your account is active. This workspace is the foundation for your upcoming skill collection.</p>
-  <dl><dt>Email verification</dt><dd><%= user.verified_at ? 'Verified — ready for future publishing' : 'Not verified — verification is required to publish' %></dd><dt>Account role</dt><dd><%= user.role %></dd></dl>
-  <% if (!user.verified_at) { %>
-    <form action="/resend-verification" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="primary" type="submit"><%= developmentVerification ? 'Print verification code' : 'Resend verification email' %></button></form>
-    <p class="helper">Up to 3 requests per hour. Sending a new link replaces previous links.</p>
-  <% } %>
-  <div class="notice">Skill creation, discovery, and management will arrive in later roadmap phases.</div>
-</section>
+<header class="page-heading"><p class="eyebrow">YOUR PERSONAL CORNER OF THE COMMONS</p><h1>Hello, <%= user.display_name %><span class="accent-text">.</span></h1><p class="lead muted">A little inspiration for whatever comes next.</p></header>
+<div class="workspace-grid">
+  <section class="card workspace-feature"><span class="workspace-symbol" aria-hidden="true">✳</span><p class="eyebrow">FOLLOW YOUR CURIOSITY</p><h2>Your next great<br>workflow is out there.</h2><p class="muted">Explore reusable instructions for writing, building, researching, and everything in between.</p><a class="button primary" href="/skills">Discover skills <span aria-hidden="true">↗</span></a></section>
+  <section class="card account-panel"><p class="eyebrow">ACCOUNT DETAILS</p><h2>A home for your know-how.</h2><dl><dt>Email address</dt><dd><%= user.email %></dd><dt>Email verification</dt><dd><span class="account-status"><span class="status-dot" aria-hidden="true"></span><%= user.verified_at ? 'Verified' : 'Verification needed' %></span></dd><dt>Account role</dt><dd class="role-label"><%= user.role %></dd></dl>
+    <% if (!user.verified_at) { %><p class="helper">Verify your email to be ready for future publishing.</p><form action="/resend-verification" method="post"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="primary" type="submit"><%= developmentVerification ? 'Print verification code' : 'Resend verification email' %></button></form><p class="helper">Up to 3 requests per hour. Sending a new link replaces previous links.</p><% } %>
+  </section>
+</div>
+<section class="roadmap-panel"><span class="label">COMING NEXT</span><div><h2>A workspace that grows with you.</h2><p class="muted">Skill creation, publishing, and collection management arrive in later roadmap phases. For now, the public catalog is yours to explore.</p></div></section>
 <%- include('../partials/footer') %>

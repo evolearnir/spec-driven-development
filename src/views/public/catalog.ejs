@@ -1,0 +1,22 @@
+<%- include('../partials/head') %>
+<header class="page-heading catalog-heading"><div><p class="eyebrow">THE OPEN SKILL CATALOG</p><h1>A little know-how.<br><span class="accent-text">A whole new way forward.</span></h1><p class="lead muted">Find a workflow for the work you love. Explore instructions shared by thoughtful creators.</p></div><div class="heading-symbol" aria-hidden="true">✳</div></header>
+<form action="/skills" method="get" class="card filters" data-catalog-form>
+  <div class="search-field"><label for="q">What would you like to do?</label><div class="search-input"><span aria-hidden="true">⌕</span><input id="q" type="search" name="q" maxlength="100" value="<%= query.q %>" placeholder="Search a skill, an idea, a better workflow…"></div></div>
+  <div><label for="category">Category</label><select id="category" name="category"><option value="">All categories</option><% for (const c of taxonomy.categories) { %><option value="<%= c.slug %>" <%= query.category === c.slug ? 'selected' : '' %>><%= c.name %></option><% } %></select></div>
+  <div><label for="tag">Tag</label><select id="tag" name="tag"><option value="">All tags</option><% for (const t of taxonomy.tags) { %><option value="<%= t.name %>" <%= query.tag === t.name ? 'selected' : '' %>><%= t.name %></option><% } %></select></div>
+  <div><label for="tool">Supported tool</label><select id="tool" name="tool"><option value="">All tools</option><% for (const t of taxonomy.tools) { %><option value="<%= t.name %>" <%= query.tool === t.name ? 'selected' : '' %>><%= t.name %></option><% } %></select></div>
+  <div><label for="sort">Sort</label><select id="sort" name="sort"><option value="newest" <%= query.sort === 'newest' ? 'selected' : '' %>>Newest</option><option value="updated" <%= query.sort === 'updated' ? 'selected' : '' %>>Recently updated</option><option value="title" <%= query.sort === 'title' ? 'selected' : '' %>>Title</option></select></div>
+  <div class="actions"><button type="submit" class="primary">Apply filters</button><a href="/skills">Clear filters</a></div>
+  <p class="helper filter-note">Tool compatibility is creator-declared.</p><p class="helper" role="status" data-form-status></p>
+</form>
+<section class="catalog-section" aria-labelledby="results-heading">
+  <div class="section-heading"><h2 id="results-heading"><%= total %> <%= total === 1 ? 'skill' : 'skills' %></h2><p class="muted">Page <%= query.page %> of <%= pages %></p></div>
+  <% if (records.length) { %><div class="skill-grid"><% for (const skill of records) { %><%- include('../partials/skill-card', { skill }) %><% } %></div>
+  <% } else { %><div class="card"><h3><%= query.q || query.category || query.tag || query.tool ? 'No matching skills' : 'The catalog is getting started' %></h3><p><%= query.q || query.category || query.tag || query.tool ? 'Try a broader search or remove a filter.' : 'No public skills are available yet. Check back for new instructions.' %></p><a href="/skills">Clear filters and browse</a><% if (!query.q && !query.category && !query.tag && !query.tool) { %><p><a href="/">Return home</a></p><% } %></div><% } %>
+  <% if (pages > 1) { %><nav class="pagination" aria-label="Catalog pages">
+    <% if (query.page > 1) { %><a rel="prev" href="<%= catalogUrl(query, query.page - 1) %>">Previous</a><% } %>
+    <% const visible = [...new Set([1, ...Array.from({ length: 5 }, (_, i) => query.page - 2 + i), pages])].filter(p => p >= 1 && p <= pages).sort((a,b) => a-b); for (const p of visible) { %><a href="<%= catalogUrl(query, p) %>" <%- p === query.page ? 'aria-current="page"' : '' %> aria-label="Page <%= p %>"><%= p %></a><% } %>
+    <% if (query.page < pages) { %><a rel="next" href="<%= catalogUrl(query, query.page + 1) %>">Next</a><% } %>
+  </nav><% } %>
+</section>
+<%- include('../partials/footer') %>

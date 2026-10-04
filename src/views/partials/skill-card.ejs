@@ -1,0 +1,8 @@
+<article class="card skill-card">
+  <div class="skill-card-top"><span class="skill-icon" aria-hidden="true"><%= ({ development: '⌘', writing: '¶', research: '⌕', productivity: '↗', design: '✳' })[skill.category ? skill.category.slug : ''] || '◇' %></span><p class="eyebrow"><%= skill.category ? skill.category.name : 'General' %></p><span class="card-arrow" aria-hidden="true">↗</span></div>
+  <h3><a href="/skills/<%= encodeURIComponent(skill.slug) %>"><%= skill.title %></a></h3>
+  <p class="skill-summary"><%= skill.summary %></p>
+  <ul class="chips" aria-label="Tags"><% for (const entry of skill.tags) { %><li><%= entry.tag.name %></li><% } %></ul>
+  <p class="helper">Creator-declared tools: <%= skill.tools.map(entry => entry.tool.name).join(', ') || 'Not specified' %></p>
+  <div class="skill-card-footer"><span class="creator-avatar" aria-hidden="true"><%= skill.owner.display_name.slice(0, 1).toUpperCase() %></span><span>By <%= skill.owner.display_name %></span><span class="free-label">Free</span></div>
+</article>

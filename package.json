@@ -19,10 +19,12 @@
     "db:generate": "prisma generate",
     "db:migrate": "tsx src/db/migrate.ts",
     "db:seed": "tsx src/db/seed.ts",
+    "db:seed:demo": "tsx scripts/seed-demo-skills.ts",
     "admin:bootstrap": "tsx scripts/bootstrap-admin.ts",
     "db:backup": "tsx scripts/backup-db.ts",
     "db:cleanup": "tsx scripts/cleanup.ts",
     "check:local": "tsx scripts/check-local.ts",
+    "check:marketplace": "tsx scripts/check-marketplace.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -46,8 +48,10 @@
     "@types/better-sqlite3": "7.6.13",
     "@types/express": "5.0.6",
     "@types/express-session": "1.18.2",
+    "@types/markdown-it": "14.2.0",
     "@types/node": "24.10.1",
     "@types/nodemailer": "7.0.4",
+    "@types/sanitize-html": "2.16.2",
     "eslint": "10.12.0",
     "globals": "17.13.0",
     "jiti": "2.6.1",

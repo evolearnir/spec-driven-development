@@ -1,10 +1,12 @@
-# SkillMart foundation
+# SkillMart
 
 SDD replanning baseline: **strict TypeScript, Node.js 24, Express 5, EJS, Prisma
 ORM, and SQLite**. See [constitution](constitution/mission.md),
 [tech stack](constitution/tech-stack.md), [ADR 005](docs/decisions/005-typescript-prisma.md),
 and [F001 evidence](features/feature-20261003-113908/validation.md).
-Hosting/staging is deferred; discovery and CRUD screens are later roadmap work.
+Public discovery, SEO and Light/Dark/System themes are implemented in
+[F002](features/feature-20261004-122329/specification.md). Hosting/staging is deferred;
+creator and administrator CRUD screens remain later roadmap work.
 
 ## Fresh setup
 
@@ -49,6 +51,7 @@ older ones; recovery responses are consistent for known/unknown accounts.
 | `npm run lint`                            | ESLint with TypeScript rules                                                  |
 | `npm run format` / `npm run format:check` | Prettier; EJS reviewed manually                                               |
 | `npm run check:local`                     | Disposable HTTP/service/concurrency/migration/restore checks; run build first |
+| `npm run check:marketplace`               | Disposable catalog/query/Markdown/SEO/visibility/seed checks                  |
 
 Local checks use Node assertions, real HTTP, independent worker connections, and
 OS-temp files removed afterward. No test framework, SMTP account, live database,
@@ -65,7 +68,8 @@ to the same database's absolute `file:` URL (forward slashes on Windows).
 The schema uses existing SQL table/column names, relations, indexes, and BigInt
 millisecond timestamps. Use generated Prisma queries for application data and await
 them. Parameterized raw SQL is limited to SQLite pragmas, writer locking, and JSON
-session revocation. `better-sqlite3` is only used for legacy inspection and backup.
+session revocation, and literal catalog matching/case-insensitive title ordering.
+`better-sqlite3` is only used for legacy inspection and backup.
 
 **Back up a retained database before migration.** `db:migrate` recognizes the old
 `schema_migrations` entry `001-foundation.sql`, baselines the existing foundation
@@ -116,6 +120,60 @@ For fixtures, set `NODE_ENV=development`, `SEED_ENABLED=true`, and a disposable
 C suspended, D invited, E/F verified admins. A/B have draft/published skills. Random
 fixture passwords are intentionally unavailable; create a browser account or bootstrap
 an explicit operator. `check:local` demonstrates awaited Prisma/policy calls.
+
+## Public marketplace and themes
+
+To populate the configured development database with 100 published demo skills
+(20 per category), run `$env:SEED_ENABLED = 'true'; npm run db:seed:demo` in
+PowerShell. This owner-requested demo seed uses complete Markdown/metadata,
+all four tools and allowed licenses, and five verified demo creators. Stable
+`demo-001-…` through `demo-100-…` slugs preserve existing records and operator edits
+on reruns. Production configuration is refused. This command adds demo inventory
+without adding the private/authentication acceptance fixtures from `db:seed`.
+
+Open `/` for featured/latest skills, `/skills` for discovery, and `/skills/:slug`
+for details, safe Markdown and copying. Only published skills with active owners
+are visible, including to signed-in owners/admins on public routes. The interim
+Publish CTA goes to login/workspace and explains that editing arrives in Phase 3.
+
+The catalog accepts `q`, `category`, `tag`, `tool`, `sort` and `page`, in that URL
+order. Search trims input (100 characters max) and literally matches title, summary
+or tags; `%`/`_` are not wildcards. SQLite LOWER supplies ASCII case-insensitive
+matching and title sorting; date/title ties use ID ascending. Filters combine with
+AND, page size is 12, and pages are capped at 10000. Defaults/blank values and
+unknown tracking keys redirect to normalized URLs. Invalid recognized input gives
+400; out-of-range result pages give 404. Filter forms reset pagination.
+
+Public HTML includes titles/descriptions, APP_URL-based canonicals and OG/Twitter
+cards. Unfiltered browse pages are indexable with page-specific canonicals; search,
+filters and nondefault sort use normalized self canonicals with noindex. Auth,
+protected and error pages have noindex and omit canonical/sharing URLs. Dynamic
+`/sitemap.xml` contains only `/`, `/skills` and eligible details with actual lastmod;
+`/robots.txt` references it. Catalog query URLs remain crawlable to observe noindex.
+
+The shared theme selector defaults to System. Light/Dark selections persist in
+`skillmart.theme`; System removes the override and follows OS changes. Blocked
+storage permits an in-document choice. A same-origin classic script resolves the
+theme before CSS loads under the existing CSP; no-JS uses the CSS system fallback.
+Copy reports success only after a completed clipboard write. Raw instructions
+remain selectable with no JavaScript or clipboard access.
+
+Development seeding adds 30 realistic skills, three active creators, title/date tie
+fixtures, a Markdown safety fixture, and draft/suspended/invited-owner fixtures.
+Reruns preserve edits and unrelated data. Use only disposable development databases:
+
+```powershell
+$env:NODE_ENV = 'development'
+$env:SEED_ENABLED = 'true'
+$env:DATABASE_PATH = Join-Path $env:TEMP 'skillmart-demo.sqlite'
+npm run db:migrate
+npm run db:seed
+npm run dev
+```
+
+Other required configuration remains in `.env`/environment. Never point these
+fixture commands at retained production data. `check:marketplace` manages its own
+disposable database, including seed refusal, query/visibility and HTTP checks.
 
 ## Maintenance and operations
 

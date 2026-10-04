@@ -1,0 +1,29 @@
+<%- include('../partials/head') %>
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero-copy">
+    <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> A COMMONS FOR HUMAN KNOW-HOW</p>
+    <h1 id="hero-heading">Your next<br>great idea.<br><span class="accent-text">Already a skill.</span></h1>
+    <p class="lead">Turn someone’s know-how into your next breakthrough. Discover thoughtful AI workflows, ready to read, copy, and make your own.</p>
+    <div class="actions"><a class="button primary" href="/skills">Browse skills <span aria-hidden="true">↗</span></a><a class="button secondary" href="<%= user ? '/dashboard' : '/login' %>">Publish a skill</a></div>
+    <p class="hero-note"><span aria-hidden="true">✳</span> Open instructions. Free to explore. Yours to adapt.</p>
+  </div>
+  <div class="hero-visual" aria-label="Example of an AI skill instruction package">
+    <div class="visual-label"><span class="status-dot" aria-hidden="true"></span> A LITTLE STRUCTURE. A LOT OF POSSIBILITY.</div>
+    <div class="preview-window">
+      <div class="window-bar"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>skill.md</span><span class="window-badge">INSTRUCTIONS</span></div>
+      <div class="preview-body"><div class="preview-icon" aria-hidden="true">⌘</div><p class="eyebrow">DEVELOPMENT / WORKFLOW</p><h2>A second set<br>of thoughtful eyes.</h2><p class="muted">A clearer, more considered pull request review.</p><div class="code-preview"><p><span class="code-comment"># Review a pull request</span></p><p><span class="code-key">01</span> Understand the intent.</p><p><span class="code-key">02</span> Find what matters.</p><p><span class="code-key">03</span> Make feedback actionable.</p></div><div class="preview-bottom"><span class="preview-avatar" aria-hidden="true">✳</span><span>Human expertise.<br><strong>Reusable by design.</strong></span><span class="preview-check" aria-hidden="true">✓</span></div></div>
+    </div>
+    <div class="floating-note"><span class="floating-note-icon" aria-hidden="true">↗</span><div><strong>From idea to workflow.</strong><span>One instruction package at a time.</span></div></div>
+    <span class="visual-caption">A preview of what’s possible. Explore real skills below.</span>
+  </div>
+</section>
+<section class="category-strip" aria-label="Explore skill categories"><span>Find your flow</span><% for (const category of [{ name: 'Development', slug: 'development' }, { name: 'Writing', slug: 'writing' }, { name: 'Research', slug: 'research' }, { name: 'Productivity', slug: 'productivity' }, { name: 'Design', slug: 'design' }]) { %><a href="/skills?category=<%= category.slug %>"><%= category.name %> <span aria-hidden="true">↗</span></a><% } %></section>
+<% for (const section of [{ heading: 'Featured skills', records: featured }, { heading: 'Latest additions', records: latest }]) { %>
+<section class="catalog-section" aria-label="<%= section.heading %>">
+  <div class="section-heading"><div><p class="eyebrow"><%= section.heading === 'Featured skills' ? 'WORTH A CLOSER LOOK' : 'FRESH FROM THE COMMONS' %></p><h2><%= section.heading %></h2></div><a class="section-link" href="/skills">Browse all skills <span aria-hidden="true">↗</span></a></div>
+  <% if (section.records.length) { %><div class="skill-grid"><% for (const skill of section.records) { %><%- include('../partials/skill-card', { skill }) %><% } %></div>
+  <% } else { %><div class="card"><p>No <%= section.heading.toLowerCase() %> yet. Explore the catalog for available instructions.</p><a href="/skills">Browse skills</a></div><% } %>
+</section>
+<% } %>
+<section class="sharing-panel"><div><p class="eyebrow">KNOW-HOW IS BETTER SHARED</p><h2>Great work starts<br>with good instructions.</h2><p class="muted">Read the skill. Copy the instructions. Bring them into your own AI workflow.</p><p class="helper">SkillMart stores instructions; it does not execute skills. Creator editing and publishing arrive in Phase 3.</p></div><a class="button primary" href="/skills">Find your next skill <span aria-hidden="true">↗</span></a></section>
+<%- include('../partials/footer') %>

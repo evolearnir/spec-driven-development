@@ -1,0 +1,14 @@
+<%- include('../partials/head') %>
+<a class="back-link" href="/skills">← Browse skills</a>
+<header class="page-heading detail-heading"><p class="eyebrow"><%= skill.category ? skill.category.name : 'General' %> <span aria-hidden="true">/</span> INSTRUCTION PACKAGE</p><h1><%= skill.title %></h1><p class="lead muted"><%= skill.summary %></p><div class="detail-byline"><span class="creator-avatar" aria-hidden="true"><%= skill.owner.display_name.slice(0, 1).toUpperCase() %></span><span>Shared by <strong><%= skill.owner.display_name %></strong></span><span class="label">FREE TO EXPLORE</span></div></header>
+<div class="detail-layout">
+  <div class="detail-content">
+    <section class="card"><p class="eyebrow">THE IDEA</p><h2>About this skill</h2><p><%= skill.description %></p></section>
+    <section class="card"><div class="section-heading"><h2>Skill instructions</h2><button class="secondary" type="button" data-copy hidden>Copy instructions</button></div><p class="helper">Instruction package only — SkillMart does not execute it.</p><p role="status" aria-live="polite" aria-atomic="true" data-copy-status></p><div class="markdown"><%- skill.bodyHtml %></div>
+      <details data-copy-fallback><summary>Original instructions / manual copy</summary><label for="raw-body">Select and copy the exact skill body</label><textarea id="raw-body" data-copy-body="<%= JSON.stringify(skill.body) %>" readonly rows="10" spellcheck="false"><%= skill.body %></textarea><p class="helper">Select the text, then use your device’s copy command.</p></details>
+    </section>
+    <section class="card"><p class="eyebrow">MAKE IT YOUR OWN</p><h2>How to use</h2><div class="markdown"><%- skill.usageHtml %></div></section>
+  </div>
+  <aside class="card skill-meta" aria-label="Skill metadata"><h2>At a glance</h2><dl><dt>Version</dt><dd><%= skill.version_label %></dd><dt>License</dt><dd><%= skill.license %></dd><dt>Compatibility (creator-declared)</dt><dd><%= skill.tools.map(entry => entry.tool.name).join(', ') || 'Not specified' %></dd><dt>Created</dt><dd><time datetime="<%= skill.created %>"><%= skill.created %></time></dd><dt>Updated</dt><dd><time datetime="<%= skill.updated %>"><%= skill.updated %></time></dd></dl><h3>Tags</h3><ul class="chips"><% for (const entry of skill.tags) { %><li><%= entry.tag.name %></li><% } %></ul><% if (skill.links.length) { %><h3>Resources</h3><ul><% for (const link of skill.links) { %><li><a href="<%= link.url %>" rel="nofollow noopener noreferrer"><%= link.type %></a></li><% } %></ul><% } %></aside>
+</div>
+<%- include('../partials/footer') %>
